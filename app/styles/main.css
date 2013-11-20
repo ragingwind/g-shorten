@@ -1,0 +1,21 @@
+body {
+  min-width: 310px;
+  margin:0;
+}
+
+div {
+  float:left;
+}
+
+.outter {
+  padding:10px;
+}
+
+.outter #url {
+  width:290px;
+}
+
+
+.outter .buttons{
+  display: none;
+}
