@@ -1,11 +1,11 @@
 {
     "name": "__MSG_appName__",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
     "icons": {
-        "16": "images/icon-grey.png",
-        "128": "images/icon-grey.png"
+        "16": "images/icon-grey-32.png",
+        "128": "images/icon-grey-32.png"
     },
     "default_locale": "en",
     "background": {
@@ -17,8 +17,8 @@
     },
     "page_action": {
         "default_icon": {
-          "19": "images/icon-grey-32.png",
-          "38": "images/icon-grey-32.png"
+            "19": "images/icon-grey-32.png",
+            "38": "images/icon-grey-32.png"
         },
         "default_popup": "popup.html"
     },
