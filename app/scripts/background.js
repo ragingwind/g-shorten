@@ -6,25 +6,22 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   }
 });
 
-function insertUrl(url, cb) {
-  gapi.client.urlshortener.url.insert({
-    'resource': { 'longUrl': url }
-  }).execute(cb);
-
-};
-
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(msg) {
-    var postMessage = function(res) {
-      port.postMessage({ shortUrl: res.id });
-    };
+    var http = new XMLHttpRequest();
+    var url = "https://www.googleapis.com/urlshortener/v1/url";
+    var params = '{"longUrl": "' + msg.url + '"}';
 
-    if (gapi.client.urlshortener) {
-      insertUrl(msg.url, postMessage);
-    } else {
-      gapi.client.load('urlshortener', 'v1', function() {
-        insertUrl(msg.url, postMessage);
-      });
+    http.open("POST", url, true);
+    http.setRequestHeader("Content-type", "application/json");
+
+    http.onreadystatechange = function() {
+      if (http.readyState == 4) {
+        port.postMessage({
+          shortUrl: http.status === 200 ? JSON.parse(http.responseText).id : 'We got failed to make shorten URL'
+        });
+      }
     }
+    http.send(params);
   });
 });

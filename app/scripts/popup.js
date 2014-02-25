@@ -18,20 +18,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
   port.onMessage.addListener(function(res) {
     setIcon('images/icon-grey-32.png', function(tab) {
-      var textRange = document.createRange();
       var text = '[{{title}}]({{shortenUrl}})'
                .replace('{{title}}', tab[0].title)
                .replace('{{shortenUrl}}', res.shortUrl);
 
-      var url = document.getElementById('url');
-      var sel;
-
-      url.innerText = text;
-      textRange.selectNode(url);
-      sel = window.getSelection();
-      sel.addRange(textRange);
-      document.execCommand("Copy");
-      sel.removeAllRanges();
+      document.getElementById('url').innerText = text;;
     });
   });
 
@@ -39,5 +30,24 @@ document.addEventListener('DOMContentLoaded', function(event) {
     setIcon('images/icon-color-32.png', function(tab) {
       port.postMessage({url: tab[0].url});
     });
+  });
+
+  document.getElementsByClassName('outter')[0].addEventListener("click", function() {
+    var textRange = document.createRange();
+    var url = document.getElementById('url');
+    var sel;
+
+    textRange.selectNode(url);
+    sel = window.getSelection();
+    sel.addRange(textRange);
+    document.execCommand("Copy");
+    sel.removeAllRanges();
+
+    var color = url.style.color;
+    url.style.color = 'red';
+
+    setTimeout(function() {
+      url.style.color = color;
+    }, 300);
   });
 });
