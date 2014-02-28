@@ -3,12 +3,16 @@
 <head>
   <link href="styles/main.css" rel="stylesheet">
   <!-- build:js scripts/popup.js -->
+  <script src="bower_components/localforage/dist/localforage.min.js"></script>
   <script src="scripts/popup.js"></script>
   <!-- endbuild -->
 </head>
 <body>
   <div class="outter">
-    <div id="url"></div><div class="buttons"><a href="#" id="next">»</a></div>
+    <div id="url"></div>
+  </div>
+  <div class="options">
+    <a href="#" id="autocopy">autocopy is on</a>
   </div>
 </body>
 </html>

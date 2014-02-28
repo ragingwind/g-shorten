@@ -15,7 +15,9 @@ div {
   width:290px;
 }
 
-
-.outter .buttons{
+.options {
+  padding-left:10px;
+  padding-bottom:10px;
+  font-size: 0.8em;
   display: none;
 }
