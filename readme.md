@@ -6,3 +6,7 @@ The extension make your current long url to shorten on activated tab.
 
 - Chrome
 - Safari
+
+## License
+
+MIT @ragingwind
