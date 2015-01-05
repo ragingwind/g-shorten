@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>G-Shorten</title>
+	<script>
+	function shortenURL (longUrl, cb) {
+		var http = new XMLHttpRequest();
+	    var url = "https://www.googleapis.com/urlshortener/v1/url";
+	    var params = '{"longUrl": "' + longUrl + '"}';
+
+	    http.open("POST", url, true);
+	    http.setRequestHeader("Content-type", "application/json");
+
+	    http.onreadystatechange = function() {
+	      if (http.readyState == 4) {
+	      	cb(JSON.parse(http.responseText));
+	      }
+	    }
+	    http.send(params);
+	}
+
+	safari.application.addEventListener("popover", function() {
+		var tab = safari.application.activeBrowserWindow.activeTab;
+		shortenURL(tab.url, function(res) {
+			safari.extension.popovers[0].contentWindow.setShortenResult({
+				shortenURL: res.id,
+				title: tab.title
+			})
+		});
+	}, true);
+	</script>
+</head>
+<body>
+</body>
+</html>

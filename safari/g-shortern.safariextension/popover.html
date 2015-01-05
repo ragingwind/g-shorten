@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script>
+	function setShortenResult(res) {
+		console.log(res);
+		document.querySelector('#url').value = ['[', res.title, 
+			'](', res.shortenURL, ')'].join('');
+		copyToClipboard();
+	};
+
+	function copyToClipboard() {
+	  var url = document.getElementById('url');
+	  url.setSelectionRange(0, 9999);
+	}
+	</script>
+	<style>
+		body {
+			padding:4px;
+		}
+
+		textarea {
+		    outline:0px !important;
+		    -webkit-appearance:none;
+		}
+	</style>
+</head>
+<body>
+  <div class="outter">
+    <textarea id="url" style="width:270px;height:160px"></textarea>
+  </div>
+</body>
+</html>
