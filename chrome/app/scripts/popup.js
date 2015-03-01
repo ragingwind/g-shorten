@@ -4,6 +4,8 @@ var linkTextFormats = [
   '[{{title}}]({{shortenUrl}})',
   '{{title}} - {{shortenUrl}}',
   '{{title}}, {{shortenUrl}}',
+  '{{title}} / {{shortenUrl}}',
+  '{{title}}: {{shortenUrl}}',
   '{{shortenUrl}}'
 ];
 
