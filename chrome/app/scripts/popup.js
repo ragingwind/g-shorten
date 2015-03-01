@@ -1,5 +1,20 @@
 'use strict';
 
+var linkTextFormats = [
+  '[{{title}}]({{shortenUrl}})',
+  '{{title}} - {{shortenUrl}}',
+  '{{title}}, {{shortenUrl}}',
+  '{{shortenUrl}}'
+];
+
+var linkInfo = {
+  title: '',
+  longUrl: '',
+  shortenUrl: '',
+  textFormat: 0,
+  autocopy: false,
+};
+
 function showOptions() {
   document.getElementsByClassName('options')[0].style.display = 'block';
 }
@@ -22,57 +37,69 @@ function copyToClipboard() {
   }, 300);
 }
 
-function setAutocopyText(on) {
-  on = (on ? 'off' : 'on');
-  document.getElementById('autocopy').innerText = 'autocopy is ' + on;
+function updateAutocopyText() {
+  document.getElementById('autocopy').innerText = 'autocopy is ' + (linkInfo.autocopy ? 'on' : 'off');
+}
+
+function updateLinkText() {
+  var text = linkTextFormats[linkInfo.textFormat]
+               .replace('{{title}}', linkInfo.title)
+               .replace('{{shortenUrl}}', linkInfo.shortenUrl);
+
+  document.getElementById('url').innerText = text;
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {
   var queryOpts = {currentWindow: true, active: true};
   var port = chrome.runtime.connect({name: "shortern"});
-  var setIcon = function(icon, cb) {
-    chrome.tabs.query(queryOpts, function(tab) {
-      chrome.pageAction.setIcon({
-        tabId: tab[0].id,
-        path: icon
-      }, function() {
-        setTimeout(function() {
-          cb(tab);
-        }, 100);
-      });
-    });
-  };
 
   port.onMessage.addListener(function(res) {
-    setIcon('images/icon-grey-32.png', function(tab) {
-      var text = '[{{title}}]({{shortenUrl}})'
-               .replace('{{title}}', tab[0].title)
-               .replace('{{shortenUrl}}', res.shortUrl);
-
-      document.getElementById('url').innerText = text;
-      localforage.getItem('autocopy', function(val) {
-        setAutocopyText(val);
-        val && copyToClipboard();
-        showOptions();
-      });
-    });
+    linkInfo.shortenUrl = res.shortUrl;
+    updateLinkText();
+    updateAutocopyText();
+    showOptions();
+    if (linkInfo.autocopy) {
+      copyToClipboard();
+    }
   });
 
-  chrome.tabs.query(queryOpts, function(tab) {
-    setIcon('images/icon-color-32.png', function(tab) {
-      port.postMessage({url: tab[0].url});
-    });
-  });
-
+  // Bind event for copy by outter touch
   document.getElementsByClassName('outter')[0].addEventListener("click", function() {
     copyToClipboard();
   });
 
+  // Bind event for autocopy
   document.getElementById('autocopy').addEventListener("click", function() {
-    localforage.getItem('autocopy', function(val) {
-      val = !val;
-      setAutocopyText(val);
-      localforage.setItem('autocopy', val);
-    });
+    linkInfo.autocopy = !linkInfo.autocopy;
+    localforage.setItem('autocopy', linkInfo.autocopy);
+    updateAutocopyText();
+  });
+
+  // Bind event for changing format
+  document.getElementById('format').addEventListener("click", function() {
+    if (linkInfo.textFormat + 1 >= linkTextFormats.length) {
+      linkInfo.textFormat = 0;
+    } else {
+      linkInfo.textFormat++;
+    }
+    localforage.setItem('format', linkInfo.textFormat);
+    updateLinkText();
+    copyToClipboard();
+  });
+
+  // Load link.textFormat index
+  localforage.getItem('format', function(err, val) {
+    linkInfo.textFormat = val === null ? 0 : val;
+  });
+
+  localforage.getItem('autocopy', function(err, val) {
+    linkInfo.autocopy = val === null ? false : val;
+  });
+
+  // Query current activated tab info then request longUrl making shorten
+  chrome.tabs.query(queryOpts, function(tab) {
+    linkInfo.title = tab[0].title;
+    linkInfo.longUrl = tab[0].url;
+    port.postMessage({url: linkInfo.longUrl});
   });
 });

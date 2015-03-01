@@ -1,11 +1,5 @@
 'use strict';
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-  if (changeInfo.status === 'loading') {
-    chrome.pageAction.show(tabId);
-  }
-});
-
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(msg) {
     var http = new XMLHttpRequest();
