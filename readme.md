@@ -1,6 +1,6 @@
 # Google URL shorten extensions
 
-The extension make your current long url to shorten on activated tab.
+The extension make your url on activated tab to shorten.
 
 ## Support Browsers
 
