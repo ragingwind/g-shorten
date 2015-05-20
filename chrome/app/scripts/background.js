@@ -3,7 +3,7 @@
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(msg) {
     var http = new XMLHttpRequest();
-    var url = "https://www.googleapis.com/urlshortener/v1/url";
+    var url = "https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyDAM3dU4jfYM5inPoQHkxmlAbITNgmM-3Y";
     var params = {
       longUrl: msg.url,
       userIp: '182.12.3.1'
