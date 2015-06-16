@@ -9,4 +9,4 @@ The extension make your url on activated tab to shorten.
 
 ## License
 
-MIT @ragingwind
+MIT @[Jimmy Moon](http://ragingwind.me)
