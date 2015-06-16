@@ -3,15 +3,9 @@
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(msg) {
     var http = new XMLHttpRequest();
-    var url = "https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyDAM3dU4jfYM5inPoQHkxmlAbITNgmM-3Y";
-    var params = {
-      longUrl: msg.url,
-      userIp: '182.12.3.1'
-    };
+    var url = 'http://gshorten.herokuapp.com/shorten?longurl=' + msg.url;
 
-    http.open("POST", url, true);
-    http.setRequestHeader("Content-type", "application/json");
-
+    http.open("GET", url, true);
     http.onreadystatechange = function() {
       if (http.readyState == 4) {
         var res = JSON.parse(http.responseText);
@@ -20,6 +14,6 @@ chrome.runtime.onConnect.addListener(function(port) {
         });
       }
     }
-    http.send(JSON.stringify(params));
+    http.send();
   });
 });
