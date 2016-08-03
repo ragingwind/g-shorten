@@ -3,7 +3,7 @@
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(msg) {
     var http = new XMLHttpRequest();
-    var url = 'http://gshorten.herokuapp.com/shorten?longurl=' + msg.url;
+    var url = 'http://gshorten.herokuapp.com/shorten?longurl=' + encodeURIComponent(msg.url);
 
     http.open("GET", url, true);
     http.onreadystatechange = function() {
