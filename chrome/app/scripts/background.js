@@ -9,8 +9,13 @@ chrome.runtime.onConnect.addListener(function(port) {
     http.onreadystatechange = function() {
       if (http.readyState == 4) {
         var res = JSON.parse(http.responseText);
-        port.postMessage({
-          shortUrl: http.status === 200 ? res.id : res.error.message
+        chrome.tabs.executeScript( {
+          code: "window.getSelection().toString();"
+        }, function(selection) {
+          port.postMessage({
+            shortUrl: http.status === 200 ? res.id : res.error.message,
+            selectedText: selection[0]
+          });
         });
       }
     }

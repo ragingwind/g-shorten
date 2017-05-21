@@ -14,7 +14,7 @@ var linkInfo = {
   longUrl: '',
   shortenUrl: '',
   textFormat: 0,
-  autocopy: false,
+  autocopy: true,
 };
 
 function showOptions() {
@@ -43,9 +43,9 @@ function updateAutocopyText() {
   document.getElementById('autocopy').innerText = 'autocopy is ' + (linkInfo.autocopy ? 'on' : 'off');
 }
 
-function updateLinkText() {
+function updateLinkText(selectedText) {
   var text = linkTextFormats[linkInfo.textFormat]
-               .replace('{{title}}', linkInfo.title)
+               .replace('{{title}}', selectedText || linkInfo.title)
                .replace('{{shortenUrl}}', linkInfo.shortenUrl);
 
   document.getElementById('url').innerText = text;
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
   port.onMessage.addListener(function(res) {
     linkInfo.shortenUrl = res.shortUrl;
-    updateLinkText();
+    updateLinkText(res.selectedText);
     updateAutocopyText();
     showOptions();
     if (linkInfo.autocopy) {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   // Bind event for autocopy
   document.getElementById('autocopy').addEventListener("click", function() {
     linkInfo.autocopy = !linkInfo.autocopy;
-    localforage.setItem('autocopy', linkInfo.autocopy);
+    // localforage.setItem('autocopy', linkInfo.autocopy);
     updateAutocopyText();
   });
 
@@ -84,19 +84,19 @@ document.addEventListener('DOMContentLoaded', function(event) {
     } else {
       linkInfo.textFormat++;
     }
-    localforage.setItem('format', linkInfo.textFormat);
+    // localforage.setItem('format', linkInfo.textFormat);
     updateLinkText();
     copyToClipboard();
   });
 
   // Load link.textFormat index
-  localforage.getItem('format', function(err, val) {
-    linkInfo.textFormat = val === null ? 0 : val;
-  });
+  // localforage.getItem('format', function(err, val) {
+  //   linkInfo.textFormat = val === null ? 0 : val;
+  // });
 
-  localforage.getItem('autocopy', function(err, val) {
-    linkInfo.autocopy = val === null ? false : val;
-  });
+  // localforage.getItem('autocopy', function(err, val) {
+  //   linkInfo.autocopy = val === null ? false : val;
+  // });
 
   // Query current activated tab info then request longUrl making shorten
   chrome.tabs.query(queryOpts, function(tab) {
