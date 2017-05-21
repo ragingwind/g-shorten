@@ -17,12 +17,16 @@ var linkInfo = {
   autocopy: true,
 };
 
+var selectedShorten = 0;
+
 function showOptions() {
   document.getElementsByClassName('options')[0].style.display = 'block';
 }
 
-function copyToClipboard() {
-  var url = document.getElementById('url');
+function copyToClipboard(idx) {
+  idx = !idx ? 0 : idx;
+
+  var url = document.querySelectorAll('.shortenUrl')[idx];
   var color = url.style.color;
   var textRange = document.createRange();
   var sel;
@@ -44,11 +48,20 @@ function updateAutocopyText() {
 }
 
 function updateLinkText(selectedText) {
-  var text = linkTextFormats[linkInfo.textFormat]
-               .replace('{{title}}', selectedText || linkInfo.title)
-               .replace('{{shortenUrl}}', linkInfo.shortenUrl);
+  linkTextFormats.forEach((format, idx) => {
+    var text = format.replace('{{title}}', selectedText || linkInfo.title)
+        .replace('{{shortenUrl}}', linkInfo.shortenUrl);
+    var div = document.createElement('div');
+    div.className = 'shortenUrl';
+    div.style.cursor = 'pointer';
+    div.style.paddingBottom = '5px';
+    div.textContent = `${text}`;
+    div.addEventListener('click', () => {
+      copyToClipboard(idx);
+    });
 
-  document.getElementById('url').innerText = text;
+    document.getElementById('url').appendChild(div);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {
@@ -65,11 +78,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
   });
 
-  // Bind event for copy by outter touch
-  document.getElementsByClassName('outter')[0].addEventListener("click", function() {
-    copyToClipboard();
-  });
-
   // Bind event for autocopy
   document.getElementById('autocopy').addEventListener("click", function() {
     linkInfo.autocopy = !linkInfo.autocopy;
@@ -78,16 +86,16 @@ document.addEventListener('DOMContentLoaded', function(event) {
   });
 
   // Bind event for changing format
-  document.getElementById('format').addEventListener("click", function() {
-    if (linkInfo.textFormat + 1 >= linkTextFormats.length) {
-      linkInfo.textFormat = 0;
-    } else {
-      linkInfo.textFormat++;
-    }
-    // localforage.setItem('format', linkInfo.textFormat);
-    updateLinkText();
-    copyToClipboard();
-  });
+  // document.getElementById('format').addEventListener("click", function() {
+  //   if (linkInfo.textFormat + 1 >= linkTextFormats.length) {
+  //     linkInfo.textFormat = 0;
+  //   } else {
+  //     linkInfo.textFormat++;
+  //   }
+  //   // localforage.setItem('format', linkInfo.textFormat);
+  //   updateLinkText();
+  //   copyToClipboard();
+  // });
 
   // Load link.textFormat index
   // localforage.getItem('format', function(err, val) {
